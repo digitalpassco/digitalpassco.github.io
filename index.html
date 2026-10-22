@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DigitalPass — Enterprise Workspace Catalog</title>
+  <meta name="description" content="Managed B2B software access for remote agencies, developers & digital creators. Cursor Pro, Figma, Framer, Supabase and more. Instant activation, 100% warranty, USDT accepted." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --surface2: #17171f;
+      --border: #2a2a3a;
+      --accent: #7c6aff;
+      --accent2: #5eead4;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --text: #e8e8f0;
+      --muted: #888899;
+      --white: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #0d0d1a 0%, #13101f 60%, #0a0f1a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 52px 20px 44px;
+      text-align: center;
+    }
+    .logo-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(124,106,255,0.12); border: 1px solid rgba(124,106,255,0.3);
+      border-radius: 100px; padding: 6px 18px;
+      font-size: 12px; font-weight: 700; color: var(--accent);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 22px;
+    }
+    header h1 {
+      font-size: clamp(26px, 5.5vw, 50px); font-weight: 800; line-height: 1.15;
+      background: linear-gradient(135deg, #fff 30%, #a78bfa 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 12px;
+    }
+    header .tagline { font-size: 15px; color: var(--muted); max-width: 480px; margin: 0 auto 24px; }
+    .header-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 24px; }
+    .pill {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 14px; font-size: 13px; font-weight: 500; color: var(--text);
+    }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
+      border-radius: 100px; padding: 6px 16px; font-size: 13px; color: var(--green); font-weight: 500;
+    }
+    .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+    .cta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 24px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 26px; border-radius: 10px; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; text-decoration: none;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #6b59e8; transform: translateY(-1px); text-decoration: none; }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--accent); transform: translateY(-1px); text-decoration: none; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(10,10,15,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 16px;
+      overflow-x: auto; white-space: nowrap;
+    }
+    nav ul { display: flex; list-style: none; gap: 0; max-width: 1100px; margin: 0 auto; }
+    nav ul li a {
+      display: inline-block; padding: 14px 18px; font-size: 13px; font-weight: 500;
+      color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.2s;
+    }
+    nav ul li a:hover { color: var(--white); border-color: var(--accent); text-decoration: none; }
+
+    /* MAIN */
+    main { max-width: 1100px; margin: 0 auto; padding: 40px 16px 80px; }
+
+    /* LEGEND */
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 20px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 20px; margin-bottom: 40px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+
+    /* SECTION */
+    .section-hdr { display: flex; align-items: center; gap: 14px; margin: 52px 0 20px; }
+    .section-icon {
+      font-size: 20px; width: 46px; height: 46px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; flex-shrink: 0;
+    }
+    .section-hdr h2 { font-size: 20px; font-weight: 700; color: var(--white); }
+    .section-hdr p { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+    /* TABLE */
+    .tbl-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); }
+    thead { background: var(--surface2); }
+    th {
+      padding: 12px 16px; font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--muted); text-align: left; white-space: nowrap;
+    }
+    td { padding: 14px 16px; font-size: 14px; color: var(--text); border-top: 1px solid var(--border); vertical-align: middle; }
+    tr:hover td { background: rgba(124,106,255,0.04); }
+    .tr-oos td { opacity: 0.55; }
+
+    .tool-name { font-weight: 700; color: var(--white); }
+    .plan-detail { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .price-cell { font-size: 16px; font-weight: 800; color: var(--white); white-space: nowrap; }
+
+    .tag {
+      display: inline-block; border-radius: 6px; padding: 3px 9px;
+      font-size: 11px; font-weight: 600; white-space: nowrap;
+    }
+    .tag-full { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+    .tag-limited { background: rgba(234,179,8,0.1); color: var(--yellow); border: 1px solid rgba(234,179,8,0.2); }
+    .tag-month { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.2); }
+
+    .order-btn {
+      display: inline-block; background: var(--accent); color: #fff;
+      border-radius: 8px; padding: 7px 16px; font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s; text-decoration: none; white-space: nowrap;
+    }
+    .order-btn:hover { opacity: 0.8; text-decoration: none; }
+    .order-btn.oos { background: var(--surface2); color: var(--muted); pointer-events: none; border: 1px solid var(--border); }
+
+    /* PAYMENT */
+    .pay-section {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px; margin-top: 52px;
+    }
+    .pay-section h2 { font-size: 20px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+    .pay-section .sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+    .notice {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: rgba(124,106,255,0.08); border: 1px solid rgba(124,106,255,0.2);
+      border-radius: 10px; padding: 12px 16px; font-size: 13px; color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .pay-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px,1fr)); gap: 16px; margin-bottom: 24px; }
+    .pay-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 22px;
+    }
+    .pay-card h3 { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .pay-card p { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .mono {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 9px 12px; color: var(--accent2);
+      word-break: break-all; display: block; margin-top: 4px;
+    }
+    .copy-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+    .copy-row .mono { flex: 1; margin-top: 0; }
+    .copy-btn {
+      background: var(--surface); border: 1px solid var(--border); color: var(--muted);
+      border-radius: 6px; padding: 6px 10px; font-size: 11px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all 0.2s;
+    }
+    .copy-btn:hover { border-color: var(--accent); color: var(--white); }
+
+    .steps-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 22px; }
+    .steps-box h3 { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 16px; }
+    .step { display: flex; gap: 14px; margin-bottom: 14px; align-items: flex-start; }
+    .step-num {
+      width: 26px; height: 26px; border-radius: 50%; background: var(--accent);
+      color: #fff; font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step p { font-size: 13px; color: var(--muted); }
+    .step p strong { color: var(--text); }
+
+    .warranty-bar {
+      display: flex; gap: 14px; align-items: flex-start;
+      background: rgba(34,197,94,0.07); border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 12px; padding: 18px 20px; margin-top: 20px;
+    }
+    .warranty-bar .wi { font-size: 22px; flex-shrink: 0; }
+    .warranty-bar h3 { font-size: 14px; font-weight: 700; color: var(--green); margin-bottom: 4px; }
+    .warranty-bar p { font-size: 13px; color: var(--muted); }
+
+    /* FAQ */
+    .faq { margin-top: 52px; }
+    .faq h2 { font-size: 20px; font-weight: 700; color: var(--white); margin-bottom: 20px; }
+    .faq-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; margin-bottom: 10px;
+    }
+    .faq-item h3 { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 8px; }
+    .faq-item p { font-size: 13px; color: var(--muted); }
+
+    /* CONTACT */
+    .contact { margin-top: 52px; text-align: center; }
+    .contact h2 { font-size: 22px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+    .contact .sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+    .contact-cards { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+    .contact-card {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 18px 28px; text-decoration: none;
+      transition: all 0.2s; min-width: 210px;
+    }
+    .contact-card:hover { border-color: var(--accent); transform: translateY(-2px); text-decoration: none; }
+    .contact-card .ci { font-size: 24px; }
+    .contact-card .cl { font-size: 11px; color: var(--muted); }
+    .contact-card .ch { font-size: 15px; font-weight: 700; color: var(--white); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); text-align: center; padding: 24px 16px; font-size: 12px; color: var(--muted); }
+
+    /* MOBILE */
+    @media (max-width: 640px) {
+      header { padding: 36px 16px 30px; }
+      .pay-grid { grid-template-columns: 1fr; }
+      nav ul li a { padding: 12px 14px; font-size: 12px; }
+      td, th { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-pill">🔐 DigitalPass</div>
+  <h1>Enterprise Workspace Catalog</h1>
+  <p class="tagline"><strong>Managed B2B software access</strong> for remote agencies, developers &amp; digital creators.</p>
+  <div class="header-pills">
+    <span class="pill">⚡ Instant Activation</span>
+    <span class="pill">🛡️ 100% Replacement Warranty</span>
+    <span class="pill">💎 USDT &amp; Binance Pay</span>
+    <span class="pill">🕐 5–15 min Delivery</span>
+  </div>
+  <div class="status-pill"><div class="pulse"></div> All Systems Active · Catalog v2.5 · October 2026</div>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="https://www.instagram.com/digital_pass.co" target="_blank">📸 Order on Instagram</a>
+    <a class="btn btn-outline" href="https://t.me/digitalpassco" target="_blank">💬 Telegram Support</a>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <ul>
+    <li><a href="#dev">💻 Dev &amp; Cloud</a></li>
+    <li><a href="#design">🎨 Design &amp; Video</a></li>
+    <li><a href="#ai">🤖 AI &amp; Media</a></li>
+    <li><a href="#ops">⚙️ Agency Ops</a></li>
+    <li><a href="#payment">💳 Payment</a></li>
+    <li><a href="#faq">❓ FAQ</a></li>
+  </ul>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><span>🟢</span> In Stock — Instant activation (5–15 min)</div>
+    <div class="legend-item"><span>🟡</span> Limited — Less than 3 seats remaining</div>
+    <div class="legend-item"><span>🔴</span> Out of Stock — DM to join waitlist</div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div id="dev" class="section-hdr">
+    <div class="section-icon">💻</div>
+    <div>
+      <h2>1. Software Engineering &amp; Cloud Infrastructure</h2>
+      <p>Engineered for full-stack developers, software outsourcing firms, and indie builders.</p>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Stock</th><th>Tool</th><th>Plan / Details</th><th>Duration</th><th>Price</th><th>Warranty</th><th>Delivery</th><th>Order</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Cursor Pro</div><div class="plan-detail">Pro AI Coding</div></td>
+          <td>Pro Workspace</td><td>12 Months</td>
+          <td class="price-cell">$95.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Dedicated Invite</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Cursor Pro</div><div class="plan-detail">Pro AI Coding</div></td>
+          <td>Pro Workspace</td><td>1 Month</td>
+          <td class="price-cell">$14.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Dedicated Invite</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Lovable Pro</div><div class="plan-detail">Full Pro · 100C/M</div></td>
+          <td>Full Pro</td><td>12 Months</td>
+          <td class="price-cell">$75.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Personal Account</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Supabase Pro</div><div class="plan-detail">Pro Tier</div></td>
+          <td>Team Workspace</td><td>12 Months</td>
+          <td class="price-cell">$85.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Team Workspace</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Replit Pro</div><div class="plan-detail">Pro Tier</div></td>
+          <td>Pro</td><td>1 Month</td>
+          <td class="price-cell">$45.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Personal Account</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Replit Core</div><div class="plan-detail">Core Membership</div></td>
+          <td>Core</td><td>12 Months</td>
+          <td class="price-cell">$65.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Personal Account</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">JetBrains Edu</div><div class="plan-detail">All Products Pack</div></td>
+          <td>All IDEs</td><td>12 Months</td>
+          <td class="price-cell">$25.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Direct Login</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟡</td>
+          <td><div class="tool-name">Bolt.new Pro</div><div class="plan-detail">Pro Workspace</div></td>
+          <td>Pro</td><td>12 Months</td>
+          <td class="price-cell">$50.00</td>
+          <td><span class="tag tag-limited">⚠️ Act. Only</span></td>
+          <td>Personal Account</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Railway Hobby</div><div class="plan-detail">Annual Credit</div></td>
+          <td>Hobby Plan</td><td>12 Months</td>
+          <td class="price-cell">$35.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Setup Code</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Warp Build</div><div class="plan-detail">Team Terminal</div></td>
+          <td>Build Plan</td><td>12 Months</td>
+          <td class="price-cell">$35.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Personal Account</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">PostHog Scale</div><div class="plan-detail">Growth Tier</div></td>
+          <td>Scale</td><td>12 Months</td>
+          <td class="price-cell">$40.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Team Seat</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div id="design" class="section-hdr">
+    <div class="section-icon">🎨</div>
+    <div>
+      <h2>2. UI/UX, Web Design &amp; Video Production</h2>
+      <p>Built for freelance UI/UX designers, web agencies, and high-volume short-form video editors.</p>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Stock</th><th>Tool</th><th>Plan / Details</th><th>Duration</th><th>Price</th><th>Warranty</th><th>Delivery</th><th>Order</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Figma Pro</div><div class="plan-detail">Pro / Edu Workspace</div></td>
+          <td>Pro</td><td>12 Months</td>
+          <td class="price-cell">$35.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Direct Login</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Figma Pro</div><div class="plan-detail">Pro / Edu Workspace</div></td>
+          <td>Pro</td><td>24 Months</td>
+          <td class="price-cell">$55.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Direct Login</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Framer Pro</div><div class="plan-detail">3,000 Credits/Month</div></td>
+          <td>Pro</td><td>12 Months</td>
+          <td class="price-cell">$55.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Setup Code</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Framer Basic</div><div class="plan-detail">1,000 Credits/Month</div></td>
+          <td>Basic</td><td>12 Months</td>
+          <td class="price-cell">$35.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Setup Code</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr class="tr-oos">
+          <td>🔴</td>
+          <td><div class="tool-name">CapCut Pro</div><div class="plan-detail">Creator Pro</div></td>
+          <td>Pro</td><td>12 Months</td>
+          <td class="price-cell">$18.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Direct Login</td>
+          <td><a class="order-btn oos">Waitlist</a></td>
+        </tr>
+        <tr class="tr-oos">
+          <td>🔴</td>
+          <td><div class="tool-name">CapCut Team</div><div class="plan-detail">Team Workspace</div></td>
+          <td>Team</td><td>12 Months</td>
+          <td class="price-cell">$28.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Team Invite</td>
+          <td><a class="order-btn oos">Waitlist</a></td>
+        </tr>
+        <tr class="tr-oos">
+          <td>🔴</td>
+          <td><div class="tool-name">Canva Pro</div><div class="plan-detail">Private Slot</div></td>
+          <td>Pro</td><td>12 Months</td>
+          <td class="price-cell">$10.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Email Invite</td>
+          <td><a class="order-btn oos">Waitlist</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Adobe All Apps</div><div class="plan-detail">Express Premium Tier</div></td>
+          <td>All Apps</td><td>12 Months</td>
+          <td class="price-cell">$30.00</td>
+          <td><span class="tag tag-month">1 Month</span></td>
+          <td>Account Activation</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr class="tr-oos">
+          <td>🔴</td>
+          <td><div class="tool-name">Mobbin Team</div><div class="plan-detail">10x Seat License</div></td>
+          <td>Team</td><td>12 Months</td>
+          <td class="price-cell">$35.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Shared Seat</td>
+          <td><a class="order-btn oos">Waitlist</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Descript</div><div class="plan-detail">Creator Tier</div></td>
+          <td>Creator</td><td>12 Months</td>
+          <td class="price-cell">$45.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Account Activation</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div id="ai" class="section-hdr">
+    <div class="section-icon">🤖</div>
+    <div>
+      <h2>3. Enterprise AI &amp; Generative Media</h2>
+      <p>Designed for marketing agencies, content creators, and AI automation specialists.</p>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Stock</th><th>Tool</th><th>Plan / Details</th><th>Duration</th><th>Price</th><th>Warranty</th><th>Delivery</th><th>Order</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Google AI Pro</div><div class="plan-detail">Gemini Advanced</div></td>
+          <td>Pro</td><td>12 Months</td>
+          <td class="price-cell">$45.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Redeem / Login</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr class="tr-oos">
+          <td>🔴</td>
+          <td><div class="tool-name">Perplexity Pro</div><div class="plan-detail">Pro Research</div></td>
+          <td>Pro</td><td>12 Months</td>
+          <td class="price-cell">$45.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Dedicated Login</td>
+          <td><a class="order-btn oos">Waitlist</a></td>
+        </tr>
+        <tr class="tr-oos">
+          <td>🔴</td>
+          <td><div class="tool-name">Perplexity CDK</div><div class="plan-detail">Annual API Key</div></td>
+          <td>CDK</td><td>12 Months</td>
+          <td class="price-cell">$48.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Instant Code</td>
+          <td><a class="order-btn oos">Waitlist</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">ElevenLabs</div><div class="plan-detail">Creator Tier</div></td>
+          <td>Creator</td><td>12 Months</td>
+          <td class="price-cell">$75.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Direct Login</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Runway Pro</div><div class="plan-detail">Pro Video Generation</div></td>
+          <td>Pro</td><td>12 Months</td>
+          <td class="price-cell">$75.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Account Access</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr class="tr-oos">
+          <td>🔴</td>
+          <td><div class="tool-name">Kling PRO</div><div class="plan-detail">3,300 Credits</div></td>
+          <td>PRO</td><td>30 Days</td>
+          <td class="price-cell">$25.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Direct Account</td>
+          <td><a class="order-btn oos">Waitlist</a></td>
+        </tr>
+        <tr class="tr-oos">
+          <td>🔴</td>
+          <td><div class="tool-name">HeyGen Creator</div><div class="plan-detail">AI Avatar Studio</div></td>
+          <td>Creator</td><td>12 Months</td>
+          <td class="price-cell">$50.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Dedicated Account</td>
+          <td><a class="order-btn oos">Waitlist</a></td>
+        </tr>
+        <tr class="tr-oos">
+          <td>🔴</td>
+          <td><div class="tool-name">SuperGrok</div><div class="plan-detail">Grok Heavy Model</div></td>
+          <td>Heavy</td><td>12 Months</td>
+          <td class="price-cell">$35.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Account Access</td>
+          <td><a class="order-btn oos">Waitlist</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div id="ops" class="section-hdr">
+    <div class="section-icon">⚙️</div>
+    <div>
+      <h2>4. Agency Automation, Ops &amp; Productivity</h2>
+      <p>Essential tooling for remote VA agencies, project managers, and digital studios.</p>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Stock</th><th>Tool</th><th>Plan / Details</th><th>Duration</th><th>Price</th><th>Warranty</th><th>Delivery</th><th>Order</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">n8n Starter</div><div class="plan-detail">Cloud Automation</div></td>
+          <td>Starter</td><td>12 Months</td>
+          <td class="price-cell">$45.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Dedicated Account</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Linear Business</div><div class="plan-detail">Agency Project Ops</div></td>
+          <td>Business</td><td>12 Months</td>
+          <td class="price-cell">$35.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Team Workspace</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Notion Business</div><div class="plan-detail">Team Workspace</div></td>
+          <td>Business</td><td>12 Months</td>
+          <td class="price-cell">$45.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Workspace Invite</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Wispr Flow Pro</div><div class="plan-detail">Fast Voice AI</div></td>
+          <td>Pro</td><td>12 Months</td>
+          <td class="price-cell">$45.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Personal Account</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+        <tr>
+          <td>🟢</td>
+          <td><div class="tool-name">Resend Pro</div><div class="plan-detail">Dev Email Service</div></td>
+          <td>Pro</td><td>12 Months</td>
+          <td class="price-cell">$45.00</td>
+          <td><span class="tag tag-full">🛡️ Full</span></td>
+          <td>Personal Account</td>
+          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PAYMENT -->
+  <div id="payment" class="pay-section">
+    <h2>💳 Payment Desk &amp; Checkout</h2>
+    <p class="sub">We accept USDT and Binance Pay only. Instant, borderless, zero bank verification required.</p>
+
+    <div class="notice">
+      <span>⚠️</span>
+      <span><strong style="color:var(--text);">Do not send crypto transaction details over Instagram DMs.</strong> Complete your payment using the official details below, then send a screenshot of the confirmation to our DM.</span>
+    </div>
+
+    <div class="pay-grid">
+      <div class="pay-card">
+        <h3>🟡 Binance Pay <span style="font-size:11px;color:var(--green);font-weight:500;">(Recommended · 0 Fees)</span></h3>
+        <p>Open Binance App → Tap Pay → Tap "Send" → Enter Pay ID → Enter exact USDT amount.</p>
+        <p style="margin-top:12px;font-size:12px;color:var(--muted);">Account Name: <strong style="color:var(--text);">DigitalPass.co</strong></p>
+        <p style="margin-top:8px;font-size:12px;color:var(--muted);">Binance Pay ID:</p>
+        <div class="copy-row">
+          <code class="mono">1197124891</code>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText('1197124891');this.textContent='✓ Copied';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+        </div>
+      </div>
+
+      <div class="pay-card">
+        <h3>💎 USDT Direct Transfer</h3>
+        <p style="margin-bottom:10px;">Send USDT to our wallet. Choose your preferred network:</p>
+        <p style="font-size:12px;color:var(--muted);">🔵 TRC-20 (Tron) — Most Common:</p>
+        <div class="copy-row">
+          <code class="mono">TJGCPzM1cPtfEReSFN4Q9Kfc1TKfM3fxsY</code>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText('TJGCPzM1cPtfEReSFN4Q9Kfc1TKfM3fxsY');this.textContent='✓';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-top:12px;">🟡 BEP-20 (BNB Chain) — Lowest Fee:</p>
+        <div class="copy-row">
+          <code class="mono">0x5AF792A8C0bfa756e795BC10419C0E8d64f837E6</code>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText('0x5AF792A8C0bfa756e795BC10419C0E8d64f837E6');this.textContent='✓';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps-box">
+      <h3>📲 3-Step Ordering Flow</h3>
+      <div class="step">
+        <div class="step-num">1</div>
+        <p><strong>Find your tool &amp; price</strong> in the catalog tables above and note the exact USD amount.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <p><strong>Transfer the amount</strong> via Binance Pay ID <code style="font-family:monospace;color:var(--accent2);font-size:13px;">1197124891</code> or USDT wallet above.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <p><strong>Send payment screenshot + your email</strong> to our <a href="https://www.instagram.com/digital_pass.co" target="_blank">Instagram (@digital_pass.co)</a> or <a href="https://t.me/digitalpassco" target="_blank">Telegram</a> for instant activation.</p>
+      </div>
+    </div>
+
+    <div class="warranty-bar">
+      <div class="wi">🛡️</div>
+      <div>
+        <h3>100% Replacement Warranty — Our B2B Promise</h3>
+        <p>Every workspace backed by Full Warranty (FW) includes free, priority replacement within <strong style="color:var(--text);">48 hours</strong> if any access disruption occurs. Every product has its own warranty terms. We test all slots before delivery.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div id="faq" class="faq">
+    <h2>❓ Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <h3>Why are your prices lower than retail?</h3>
+      <p>DigitalPass provisions seats through enterprise volume licensing agreements, multi-seat developer partner programs, and educational corporate agreements. All workspaces have 100% native, uninhibited functionality.</p>
+    </div>
+    <div class="faq-item">
+      <h3>How does the 100% Replacement Warranty work?</h3>
+      <p>If any workspace seat experiences service disruption during the warranty period, send a message to our support desk with your order ID. We generate and deliver a fresh replacement seat within 36 hours, no questions asked.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What payment options are supported?</h3>
+      <p>We accept Binance Pay (ID: <code style="font-family:monospace;color:var(--accent2);">1197124891</code>) and USDT via TRC-20 or BEP-20 networks. Payments are fast, borderless, and require zero bank verification.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Do I need to share my email password?</h3>
+      <p>Never. We will never ask for your email password. For team tools, you simply provide your email address and we deliver an official B2B organization invitation link directly to your inbox.</p>
+    </div>
+    <div class="faq-item">
+      <h3>How long does delivery take?</h3>
+      <p>Average delivery is 5–15 minutes after payment confirmation is received. Operating hours: 9:00 AM – 10:30 PM · Average response time under 15 minutes.</p>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact">
+    <h2>📩 Ready to Order?</h2>
+    <p class="sub">DM us with the tool name. We'll get you activated within 15 minutes.</p>
+    <div class="contact-cards">
+      <a class="contact-card" href="https://www.instagram.com/digital_pass.co" target="_blank">
+        <span class="ci">📸</span>
+        <div><div class="cl">Instagram DM · Direct Orders</div><div class="ch">@digital_pass.co</div></div>
+      </a>
+      <a class="contact-card" href="https://t.me/digitalpassco" target="_blank">
+        <span class="ci">💬</span>
+        <div><div class="cl">Telegram · Support &amp; Dispatch</div><div class="ch">@digitalpassco</div></div>
+      </a>
+    </div>
+    <p style="margin-top:20px;font-size:13px;color:var(--muted);">⏱️ Operating Hours: 9:00 AM – 10:30 PM · Average response under 15 minutes</p>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 DigitalPass · Enterprise Workspace Catalog · All seats are B2B licensed workspace access · Catalog v2.5</p>
+</footer>
+
+</body>
+</html>
