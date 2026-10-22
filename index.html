@@ -6,14 +6,16 @@
   <title>DigitalPass — Enterprise Workspace Catalog</title>
   <meta name="description" content="Managed B2B software access for remote agencies, developers & digital creators. Cursor Pro, Figma, Framer, Supabase and more. Instant activation, 100% warranty, USDT accepted." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #0a0a0f;
       --surface: #111118;
       --surface2: #17171f;
+      --surface3: #1f1f2b;
       --border: #2a2a3a;
       --accent: #7c6aff;
+      --accent-glow: rgba(124, 106, 255, 0.4);
       --accent2: #5eead4;
       --green: #22c55e;
       --yellow: #eab308;
@@ -65,7 +67,7 @@
     .btn {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 12px 26px; border-radius: 10px; font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s; text-decoration: none;
+      cursor: pointer; transition: all 0.2s; text-decoration: none; border: none;
     }
     .btn-primary { background: var(--accent); color: #fff; }
     .btn-primary:hover { background: #6b59e8; transform: translateY(-1px); text-decoration: none; }
@@ -88,7 +90,7 @@
     nav ul li a:hover { color: var(--white); border-color: var(--accent); text-decoration: none; }
 
     /* MAIN */
-    main { max-width: 1100px; margin: 0 auto; padding: 40px 16px 80px; }
+    main { max-width: 1100px; margin: 0 auto; padding: 40px 16px 100px; }
 
     /* LEGEND */
     .legend {
@@ -133,13 +135,16 @@
     .tag-limited { background: rgba(234,179,8,0.1); color: var(--yellow); border: 1px solid rgba(234,179,8,0.2); }
     .tag-month { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.2); }
 
-    .order-btn {
-      display: inline-block; background: var(--accent); color: #fff;
-      border-radius: 8px; padding: 7px 16px; font-size: 12px; font-weight: 600;
-      cursor: pointer; transition: opacity 0.2s; text-decoration: none; white-space: nowrap;
+    /* ADD TO CART BUTTONS */
+    .btn-add {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      background: var(--surface2); color: var(--white); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
     }
-    .order-btn:hover { opacity: 0.8; text-decoration: none; }
-    .order-btn.oos { background: var(--surface2); color: var(--muted); pointer-events: none; border: 1px solid var(--border); }
+    .btn-add:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-add.added { background: rgba(34,197,94,0.15); border-color: var(--green); color: var(--green); }
+    .btn-add.oos { background: transparent; color: var(--muted); border-color: var(--border); opacity: 0.5; pointer-events: none; }
 
     /* PAYMENT */
     .pay-section {
@@ -227,12 +232,286 @@
     /* FOOTER */
     footer { border-top: 1px solid var(--border); text-align: center; padding: 24px 16px; font-size: 12px; color: var(--muted); }
 
+    /* ── FLOATING CART PILL ── */
+    .floating-cart {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 99;
+      background: linear-gradient(135deg, #7c6aff, #5a44ee);
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 50px;
+      box-shadow: 0 10px 30px var(--accent-glow);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .floating-cart:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 14px 36px var(--accent-glow);
+    }
+    .cart-badge {
+      background: #fff;
+      color: #5a44ee;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .cart-total-pill {
+      background: rgba(0,0,0,0.25);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+
+    /* ── CART DRAWER MODAL ── */
+    .cart-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .cart-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .cart-drawer {
+      position: fixed;
+      top: 0; right: -480px;
+      width: 100%;
+      max-width: 460px;
+      height: 100%;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: -10px 0 40px rgba(0,0,0,0.6);
+    }
+    .cart-overlay.open .cart-drawer {
+      right: 0;
+    }
+    .drawer-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .drawer-header h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .drawer-close {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .drawer-close:hover { color: #fff; border-color: var(--accent); }
+
+    .drawer-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .empty-cart-msg {
+      text-align: center;
+      color: var(--muted);
+      padding: 50px 20px;
+    }
+    .empty-cart-msg .ec-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+      opacity: 0.6;
+    }
+    .cart-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .cart-item-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cart-item-info .c-name {
+      font-weight: 700;
+      color: var(--white);
+      font-size: 14px;
+    }
+    .cart-item-info .c-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .cart-item-side {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .cart-item-price {
+      font-weight: 800;
+      color: var(--white);
+      font-size: 15px;
+    }
+    .btn-remove-item {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+    .btn-remove-item:hover { color: var(--red); }
+
+    .drawer-checkout {
+      border-top: 1px solid var(--border);
+      padding: 20px 24px 28px;
+      background: var(--surface2);
+    }
+    .cart-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .cart-total-label {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .cart-total-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--white);
+    }
+
+    .order-summary-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent2);
+      line-height: 1.5;
+      max-height: 100px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    .checkout-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn-checkout-action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+      width: 100%;
+    }
+    .btn-copy-summary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-copy-summary:hover {
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .btn-ig-checkout {
+      background: linear-gradient(135deg, #e1306c, #833ab4);
+      color: #fff;
+    }
+    .btn-ig-checkout:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .btn-tg-checkout {
+      background: #229ED9;
+      color: #fff;
+    }
+    .btn-tg-checkout:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* TOAST */
+    .toast-msg {
+      position: fixed;
+      bottom: 85px;
+      right: 24px;
+      background: var(--surface2);
+      color: var(--white);
+      border: 1px solid var(--green);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 999;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+    }
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* MOBILE */
     @media (max-width: 640px) {
       header { padding: 36px 16px 30px; }
       .pay-grid { grid-template-columns: 1fr; }
       nav ul li a { padding: 12px 14px; font-size: 12px; }
       td, th { padding: 10px 12px; }
+      .floating-cart { bottom: 16px; right: 16px; padding: 12px 18px; font-size: 13px; }
+      .cart-drawer { max-width: 100%; }
     }
   </style>
 </head>
@@ -290,7 +569,7 @@
     <table>
       <thead>
         <tr>
-          <th>Stock</th><th>Tool</th><th>Plan / Details</th><th>Duration</th><th>Price</th><th>Warranty</th><th>Delivery</th><th>Order</th>
+          <th>Stock</th><th>Tool</th><th>Plan / Details</th><th>Duration</th><th>Price</th><th>Warranty</th><th>Delivery</th><th>Select</th>
         </tr>
       </thead>
       <tbody>
@@ -301,7 +580,7 @@
           <td class="price-cell">$95.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Dedicated Invite</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('cursor-12m', 'Cursor Pro', '12 Months', 95)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -310,7 +589,7 @@
           <td class="price-cell">$14.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Dedicated Invite</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('cursor-1m', 'Cursor Pro', '1 Month', 14)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -319,7 +598,7 @@
           <td class="price-cell">$75.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Personal Account</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('lovable-12m', 'Lovable Pro', '12 Months', 75)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -328,7 +607,7 @@
           <td class="price-cell">$85.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Team Workspace</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('supabase-12m', 'Supabase Pro', '12 Months', 85)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -337,7 +616,7 @@
           <td class="price-cell">$45.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Personal Account</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('replit-1m', 'Replit Pro', '1 Month', 45)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -346,7 +625,7 @@
           <td class="price-cell">$65.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Personal Account</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('replit-core-12m', 'Replit Core', '12 Months', 65)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -355,7 +634,7 @@
           <td class="price-cell">$25.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Direct Login</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('jetbrains-12m', 'JetBrains Edu', '12 Months', 25)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟡</td>
@@ -364,7 +643,7 @@
           <td class="price-cell">$50.00</td>
           <td><span class="tag tag-limited">⚠️ Act. Only</span></td>
           <td>Personal Account</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('bolt-12m', 'Bolt.new Pro', '12 Months', 50)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -373,7 +652,7 @@
           <td class="price-cell">$35.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Setup Code</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('railway-12m', 'Railway Hobby', '12 Months', 35)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -382,7 +661,7 @@
           <td class="price-cell">$35.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Personal Account</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('warp-12m', 'Warp Build', '12 Months', 35)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -391,7 +670,7 @@
           <td class="price-cell">$40.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Team Seat</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('posthog-12m', 'PostHog Scale', '12 Months', 40)">+ Add to Cart</button></td>
         </tr>
       </tbody>
     </table>
@@ -409,7 +688,7 @@
     <table>
       <thead>
         <tr>
-          <th>Stock</th><th>Tool</th><th>Plan / Details</th><th>Duration</th><th>Price</th><th>Warranty</th><th>Delivery</th><th>Order</th>
+          <th>Stock</th><th>Tool</th><th>Plan / Details</th><th>Duration</th><th>Price</th><th>Warranty</th><th>Delivery</th><th>Select</th>
         </tr>
       </thead>
       <tbody>
@@ -420,7 +699,7 @@
           <td class="price-cell">$35.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Direct Login</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('figma-12m', 'Figma Pro', '12 Months', 35)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -429,7 +708,7 @@
           <td class="price-cell">$55.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Direct Login</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('figma-24m', 'Figma Pro', '24 Months', 55)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -438,7 +717,7 @@
           <td class="price-cell">$55.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Setup Code</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('framer-pro-12m', 'Framer Pro', '12 Months', 55)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -447,7 +726,7 @@
           <td class="price-cell">$35.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Setup Code</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('framer-basic-12m', 'Framer Basic', '12 Months', 35)">+ Add to Cart</button></td>
         </tr>
         <tr class="tr-oos">
           <td>🔴</td>
@@ -456,7 +735,7 @@
           <td class="price-cell">$18.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Direct Login</td>
-          <td><a class="order-btn oos">Waitlist</a></td>
+          <td><button class="btn-add oos">Out of Stock</button></td>
         </tr>
         <tr class="tr-oos">
           <td>🔴</td>
@@ -465,7 +744,7 @@
           <td class="price-cell">$28.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Team Invite</td>
-          <td><a class="order-btn oos">Waitlist</a></td>
+          <td><button class="btn-add oos">Out of Stock</button></td>
         </tr>
         <tr class="tr-oos">
           <td>🔴</td>
@@ -474,7 +753,7 @@
           <td class="price-cell">$10.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Email Invite</td>
-          <td><a class="order-btn oos">Waitlist</a></td>
+          <td><button class="btn-add oos">Out of Stock</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -483,7 +762,7 @@
           <td class="price-cell">$30.00</td>
           <td><span class="tag tag-month">1 Month</span></td>
           <td>Account Activation</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('adobe-12m', 'Adobe All Apps', '12 Months', 30)">+ Add to Cart</button></td>
         </tr>
         <tr class="tr-oos">
           <td>🔴</td>
@@ -492,7 +771,7 @@
           <td class="price-cell">$35.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Shared Seat</td>
-          <td><a class="order-btn oos">Waitlist</a></td>
+          <td><button class="btn-add oos">Out of Stock</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -501,7 +780,7 @@
           <td class="price-cell">$45.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Account Activation</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('descript-12m', 'Descript', '12 Months', 45)">+ Add to Cart</button></td>
         </tr>
       </tbody>
     </table>
@@ -519,7 +798,7 @@
     <table>
       <thead>
         <tr>
-          <th>Stock</th><th>Tool</th><th>Plan / Details</th><th>Duration</th><th>Price</th><th>Warranty</th><th>Delivery</th><th>Order</th>
+          <th>Stock</th><th>Tool</th><th>Plan / Details</th><th>Duration</th><th>Price</th><th>Warranty</th><th>Delivery</th><th>Select</th>
         </tr>
       </thead>
       <tbody>
@@ -530,7 +809,7 @@
           <td class="price-cell">$45.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Redeem / Login</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('gemini-12m', 'Google AI Pro', '12 Months', 45)">+ Add to Cart</button></td>
         </tr>
         <tr class="tr-oos">
           <td>🔴</td>
@@ -539,7 +818,7 @@
           <td class="price-cell">$45.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Dedicated Login</td>
-          <td><a class="order-btn oos">Waitlist</a></td>
+          <td><button class="btn-add oos">Out of Stock</button></td>
         </tr>
         <tr class="tr-oos">
           <td>🔴</td>
@@ -548,7 +827,7 @@
           <td class="price-cell">$48.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Instant Code</td>
-          <td><a class="order-btn oos">Waitlist</a></td>
+          <td><button class="btn-add oos">Out of Stock</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -557,7 +836,7 @@
           <td class="price-cell">$75.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Direct Login</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('elevenlabs-12m', 'ElevenLabs', '12 Months', 75)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -566,7 +845,7 @@
           <td class="price-cell">$75.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Account Access</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('runway-12m', 'Runway Pro', '12 Months', 75)">+ Add to Cart</button></td>
         </tr>
         <tr class="tr-oos">
           <td>🔴</td>
@@ -575,7 +854,7 @@
           <td class="price-cell">$25.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Direct Account</td>
-          <td><a class="order-btn oos">Waitlist</a></td>
+          <td><button class="btn-add oos">Out of Stock</button></td>
         </tr>
         <tr class="tr-oos">
           <td>🔴</td>
@@ -584,7 +863,7 @@
           <td class="price-cell">$50.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Dedicated Account</td>
-          <td><a class="order-btn oos">Waitlist</a></td>
+          <td><button class="btn-add oos">Out of Stock</button></td>
         </tr>
         <tr class="tr-oos">
           <td>🔴</td>
@@ -593,7 +872,7 @@
           <td class="price-cell">$35.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Account Access</td>
-          <td><a class="order-btn oos">Waitlist</a></td>
+          <td><button class="btn-add oos">Out of Stock</button></td>
         </tr>
       </tbody>
     </table>
@@ -611,7 +890,7 @@
     <table>
       <thead>
         <tr>
-          <th>Stock</th><th>Tool</th><th>Plan / Details</th><th>Duration</th><th>Price</th><th>Warranty</th><th>Delivery</th><th>Order</th>
+          <th>Stock</th><th>Tool</th><th>Plan / Details</th><th>Duration</th><th>Price</th><th>Warranty</th><th>Delivery</th><th>Select</th>
         </tr>
       </thead>
       <tbody>
@@ -622,7 +901,7 @@
           <td class="price-cell">$45.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Dedicated Account</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('n8n-12m', 'n8n Starter', '12 Months', 45)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -631,7 +910,7 @@
           <td class="price-cell">$35.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Team Workspace</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('linear-12m', 'Linear Business', '12 Months', 35)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -640,7 +919,7 @@
           <td class="price-cell">$45.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Workspace Invite</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('notion-12m', 'Notion Business', '12 Months', 45)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -649,7 +928,7 @@
           <td class="price-cell">$45.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Personal Account</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('wispr-12m', 'Wispr Flow Pro', '12 Months', 45)">+ Add to Cart</button></td>
         </tr>
         <tr>
           <td>🟢</td>
@@ -658,7 +937,7 @@
           <td class="price-cell">$45.00</td>
           <td><span class="tag tag-full">🛡️ Full</span></td>
           <td>Personal Account</td>
-          <td><a class="order-btn" href="https://www.instagram.com/digital_pass.co" target="_blank">Order →</a></td>
+          <td><button class="btn-add" onclick="addToCart('resend-12m', 'Resend Pro', '12 Months', 45)">+ Add to Cart</button></td>
         </tr>
       </tbody>
     </table>
@@ -706,15 +985,15 @@
       <h3>📲 3-Step Ordering Flow</h3>
       <div class="step">
         <div class="step-num">1</div>
-        <p><strong>Find your tool &amp; price</strong> in the catalog tables above and note the exact USD amount.</p>
+        <p><strong>Add your tools to the Cart</strong> using the "+ Add to Cart" buttons to get your calculated total.</p>
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <p><strong>Transfer the amount</strong> via Binance Pay ID <code style="font-family:monospace;color:var(--accent2);font-size:13px;">1197124891</code> or USDT wallet above.</p>
+        <p><strong>Transfer the exact total amount</strong> via Binance Pay ID <code style="font-family:monospace;color:var(--accent2);font-size:13px;">1197124891</code> or USDT wallet above.</p>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <p><strong>Send payment screenshot + your email</strong> to our <a href="https://www.instagram.com/digital_pass.co" target="_blank">Instagram (@digital_pass.co)</a> or <a href="https://t.me/digitalpassco" target="_blank">Telegram</a> for instant activation.</p>
+        <p><strong>Send payment screenshot + copied order summary</strong> to our <a href="https://www.instagram.com/digital_pass.co" target="_blank">Instagram (@digital_pass.co)</a> or <a href="https://t.me/digitalpassco" target="_blank">Telegram</a> for instant activation.</p>
       </div>
     </div>
 
@@ -737,7 +1016,7 @@
     </div>
     <div class="faq-item">
       <h3>How does the 100% Replacement Warranty work?</h3>
-      <p>If any workspace seat experiences service disruption during the warranty period, send a message to our support desk with your order ID. We generate and deliver a fresh replacement seat within 36 hours, no questions asked.</p>
+      <p>If any workspace seat experiences service disruption during the warranty period, send a message to our support desk with your order ID. We deliver a fresh replacement seat within 36 hours, no questions asked.</p>
     </div>
     <div class="faq-item">
       <h3>What payment options are supported?</h3>
@@ -772,9 +1051,216 @@
 
 </main>
 
+<!-- FLOATING CART BUTTON -->
+<div class="floating-cart" id="floatingCartBtn" onclick="toggleCartDrawer(true)" style="display: none;">
+  <span>🛒 Cart</span>
+  <span class="cart-badge" id="cartCountBadge">0</span>
+  <span class="cart-total-pill" id="cartTotalBadge">$0.00</span>
+</div>
+
+<!-- TOAST MESSAGE -->
+<div class="toast-msg" id="toastMsg">✓ Added to Cart</div>
+
+<!-- CART DRAWER / MODAL -->
+<div class="cart-overlay" id="cartOverlay" onclick="handleOverlayClick(event)">
+  <div class="cart-drawer">
+    <div class="drawer-header">
+      <h3>🛒 Your Selected Workspaces</h3>
+      <button class="drawer-close" onclick="toggleCartDrawer(false)">✕</button>
+    </div>
+
+    <div class="drawer-body" id="drawerBody">
+      <div class="empty-cart-msg" id="emptyCartMsg">
+        <div class="ec-icon">🛒</div>
+        <p><strong>Your cart is currently empty</strong></p>
+        <p style="font-size:12px;margin-top:6px;">Browse the catalog and click "+ Add to Cart" to select tools.</p>
+      </div>
+
+      <div class="cart-items-list" id="cartItemsList">
+        <!-- Cart items injected by JS -->
+      </div>
+    </div>
+
+    <div class="drawer-checkout" id="drawerCheckout" style="display: none;">
+      <div class="cart-total-row">
+        <span class="cart-total-label">Total to Pay (USDT):</span>
+        <span class="cart-total-val" id="drawerTotalVal">$0.00</span>
+      </div>
+
+      <p style="font-size: 11px; color: var(--muted); margin-bottom: 8px;">Order Summary (Copy to DM):</p>
+      <div class="order-summary-box" id="orderSummaryText"></div>
+
+      <div class="checkout-btns">
+        <button class="btn-checkout-action btn-copy-summary" onclick="copyOrderSummary()">
+          📋 Copy Order Summary
+        </button>
+        <a class="btn-checkout-action btn-ig-checkout" href="https://www.instagram.com/digital_pass.co" target="_blank">
+          📸 Send Screenshot on Instagram
+        </a>
+        <button class="btn-checkout-action btn-tg-checkout" onclick="openTelegramOrder()">
+          💬 Send via Telegram (Pre-Filled)
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer>
   <p>© 2026 DigitalPass · Enterprise Workspace Catalog · All seats are B2B licensed workspace access · Catalog v2.5</p>
 </footer>
+
+<script>
+  let cart = [];
+
+  // Load cart from LocalStorage
+  try {
+    const saved = localStorage.getItem('digitalpass_cart');
+    if (saved) cart = JSON.parse(saved);
+  } catch(e) {}
+
+  function saveCart() {
+    try {
+      localStorage.setItem('digitalpass_cart', JSON.stringify(cart));
+    } catch(e) {}
+  }
+
+  function showToast(text) {
+    const toast = document.getElementById('toastMsg');
+    toast.textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  function addToCart(id, name, duration, price) {
+    // Check if item already exists
+    const existing = cart.find(item => item.id === id);
+    if (existing) {
+      existing.qty = (existing.qty || 1) + 1;
+    } else {
+      cart.push({ id, name, duration, price: Number(price), qty: 1 });
+    }
+    saveCart();
+    renderCart();
+    showToast(`✓ Added ${name} to cart`);
+
+    // Animate button feedback
+    if (event && event.target) {
+      const btn = event.target;
+      const originalText = btn.textContent;
+      btn.textContent = '✓ Added';
+      btn.classList.add('added');
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.classList.remove('added');
+      }, 1500);
+    }
+  }
+
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    saveCart();
+    renderCart();
+  }
+
+  function toggleCartDrawer(open) {
+    const overlay = document.getElementById('cartOverlay');
+    if (open) {
+      overlay.classList.add('open');
+      renderCart();
+    } else {
+      overlay.classList.remove('open');
+    }
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target.id === 'cartOverlay') {
+      toggleCartDrawer(false);
+    }
+  }
+
+  function generateSummaryText() {
+    if (cart.length === 0) return '';
+    let total = 0;
+    let lines = ['🔐 DigitalPass Order Summary:'];
+    cart.forEach(item => {
+      const itemTotal = item.price * (item.qty || 1);
+      total += itemTotal;
+      lines.push(`• ${item.name} (${item.duration}) ${item.qty > 1 ? 'x' + item.qty : ''} — $${itemTotal.toFixed(2)}`);
+    });
+    lines.push('──────────────────────');
+    lines.push(`Total: $${total.toFixed(2)} USDT`);
+    lines.push(`Pay to: Binance ID 1197124891 / USDT TRC20`);
+    return lines.join('\n');
+  }
+
+  function renderCart() {
+    const list = document.getElementById('cartItemsList');
+    const emptyMsg = document.getElementById('emptyCartMsg');
+    const checkoutArea = document.getElementById('drawerCheckout');
+    const floatingBtn = document.getElementById('floatingCartBtn');
+    const countBadge = document.getElementById('cartCountBadge');
+    const totalBadge = document.getElementById('cartTotalBadge');
+    const drawerTotal = document.getElementById('drawerTotalVal');
+    const summaryBox = document.getElementById('orderSummaryText');
+
+    let totalCount = 0;
+    let totalPrice = 0;
+
+    cart.forEach(i => {
+      totalCount += (i.qty || 1);
+      totalPrice += i.price * (i.qty || 1);
+    });
+
+    // Update Floating Pill
+    if (totalCount > 0) {
+      floatingBtn.style.display = 'flex';
+      countBadge.textContent = totalCount;
+      totalBadge.textContent = `$${totalPrice.toFixed(2)}`;
+    } else {
+      floatingBtn.style.display = 'none';
+    }
+
+    // Update Drawer Contents
+    if (cart.length === 0) {
+      emptyMsg.style.display = 'block';
+      list.innerHTML = '';
+      checkoutArea.style.display = 'none';
+    } else {
+      emptyMsg.style.display = 'none';
+      checkoutArea.style.display = 'block';
+      drawerTotal.textContent = `$${totalPrice.toFixed(2)}`;
+      summaryBox.textContent = generateSummaryText();
+
+      list.innerHTML = cart.map((item, idx) => `
+        <div class="cart-item-card">
+          <div class="cart-item-info">
+            <div class="c-name">${item.name}</div>
+            <div class="c-sub">${item.duration} ${item.qty > 1 ? '· Qty: ' + item.qty : ''}</div>
+          </div>
+          <div class="cart-item-side">
+            <div class="cart-item-price">$${(item.price * (item.qty || 1)).toFixed(2)}</div>
+            <button class="btn-remove-item" onclick="removeFromCart(${idx})" title="Remove item">✕</button>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+
+  function copyOrderSummary() {
+    const text = generateSummaryText();
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('✓ Order Summary Copied! Paste it in your DM');
+    });
+  }
+
+  function openTelegramOrder() {
+    const text = encodeURIComponent(generateSummaryText() + '\n\nI have attached my payment screenshot.');
+    window.open(`https://t.me/digitalpassco?text=${text}`, '_blank');
+  }
+
+  // Initial render on load
+  renderCart();
+</script>
 
 </body>
 </html>
