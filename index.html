@@ -406,7 +406,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: 10px;
     }
     .cart-total-label {
       font-size: 14px;
@@ -416,69 +420,151 @@
     .cart-total-val {
       font-size: 24px;
       font-weight: 800;
-      color: var(--white);
+      color: var(--green);
     }
 
-    .order-summary-box {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 14px;
-      margin-bottom: 16px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--accent2);
-      line-height: 1.5;
-      max-height: 100px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-    }
+    /* ── 4-STEP CHECKOUT ── */
+    .checkout-step { display: none; }
+    .checkout-step.active { display: block; }
 
-    .checkout-btns {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    .step-indicator {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; margin-bottom: 0; padding: 14px 0 0;
     }
-    .btn-checkout-action {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 13px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s;
-      border: none;
-      width: 100%;
+    .step-dot {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--surface3); border: 2px solid var(--border);
+      color: var(--muted); font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s; flex-shrink: 0;
     }
-    .btn-copy-summary {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
+    .step-dot.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .step-dot.done   { background: var(--green);  border-color: var(--green);  color: #fff; }
+    .step-line { flex: 1; height: 2px; background: var(--border); max-width: 34px; transition: background 0.3s; }
+    .step-line.done { background: var(--green); }
+
+    /* Invoice */
+    .invoice-box { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 14px; }
+    .invoice-header {
+      background: var(--surface2); padding: 11px 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--border);
     }
-    .btn-copy-summary:hover {
-      border-color: var(--accent);
-      color: #fff;
+    .invoice-header .inv-title { font-size: 11px; font-weight: 700; color: var(--white); letter-spacing: 0.06em; text-transform: uppercase; }
+    .invoice-header .inv-id   { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+    .invoice-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 9px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);
     }
-    .btn-ig-checkout {
+    .invoice-row:last-child { border-bottom: none; }
+    .invoice-row .ir-name  { font-size: 13px; color: var(--text); font-weight: 500; }
+    .invoice-row .ir-meta  { font-size: 11px; color: var(--muted); }
+    .invoice-row .ir-price { font-size: 14px; font-weight: 700; color: var(--white); }
+    .invoice-total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px; background: rgba(124,106,255,0.08);
+      border-top: 1px solid rgba(124,106,255,0.2);
+    }
+    .invoice-total-row .itl { font-size: 12px; font-weight: 700; color: var(--muted); }
+    .invoice-total-row .itv { font-size: 22px; font-weight: 800; color: var(--green); }
+
+    /* Form */
+    .co-label {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.07em; display: block;
+    }
+    .co-input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 11px 14px; font-size: 14px; color: var(--text);
+      font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; margin-bottom: 14px;
+    }
+    .co-input:focus { border-color: var(--accent); }
+    .co-input::placeholder { color: var(--muted); }
+
+    /* Payment method cards */
+    .pay-method-card {
+      border: 2px solid var(--border); border-radius: 12px;
+      padding: 14px 16px; cursor: pointer; transition: all 0.2s;
+      background: var(--bg); margin-bottom: 10px;
+    }
+    .pay-method-card:hover { border-color: var(--accent); }
+    .pay-method-card.sel-yellow { border-color: #eab308; background: rgba(234,179,8,0.06); }
+    .pay-method-card.sel-purple { border-color: var(--accent); background: rgba(124,106,255,0.07); }
+    .pay-method-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .pay-method-name { font-size: 14px; font-weight: 700; color: var(--white); }
+    .pay-method-badge {
+      font-size: 10px; font-weight: 700;
+      background: rgba(34,197,94,0.15); color: var(--green);
+      border: 1px solid rgba(34,197,94,0.3); border-radius: 6px; padding: 2px 8px;
+    }
+    .pay-method-sub { font-size: 11px; color: var(--muted); }
+    .pay-detail-box { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .pay-detail-box.show { display: block; }
+
+    /* Wallet copy rows */
+    .cart-copy-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .cart-mono {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 7px 10px; color: var(--accent2);
+      word-break: break-all; flex: 1;
+    }
+    .cart-copy-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); border-radius: 6px; padding: 6px 12px;
+      font-size: 11px; font-weight: 600; cursor: pointer;
+      white-space: nowrap; transition: all 0.2s; flex-shrink: 0;
+    }
+    .cart-copy-btn:hover { border-color: var(--accent); color: #fff; }
+
+    /* Step nav */
+    .step-nav { display: flex; gap: 10px; margin-top: 8px; }
+    .btn-step-back {
+      flex: 0 0 auto; padding: 12px 18px; border-radius: 10px;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-step-back:hover { border-color: var(--accent); color: #fff; }
+    .btn-step-next {
+      flex: 1; padding: 13px; border-radius: 10px;
+      background: var(--accent); border: none; color: #fff;
+      font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-step-next:hover { background: #6b59e8; transform: translateY(-1px); }
+
+    /* Confirmation screen */
+    .confirm-screen { text-align: center; padding: 10px 0 20px; }
+    .confirm-icon { font-size: 48px; margin-bottom: 14px; animation: popIn 0.5s ease; }
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      80% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .confirm-title { font-size: 20px; font-weight: 800; color: var(--white); margin-bottom: 8px; }
+    .confirm-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+    .confirm-order-id {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent2);
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 14px; display: inline-block; margin-bottom: 20px;
+    }
+    .confirm-ig-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
       background: linear-gradient(135deg, #e1306c, #833ab4);
-      color: #fff;
+      color: #fff; font-size: 15px; font-weight: 700;
+      padding: 15px 24px; border-radius: 12px; text-decoration: none;
+      margin-bottom: 10px; transition: opacity 0.2s, transform 0.2s;
     }
-    .btn-ig-checkout:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
+    .confirm-ig-btn:hover { opacity: 0.9; transform: translateY(-2px); text-decoration: none; }
+    .confirm-tg-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: transparent; color: var(--muted); font-size: 13px; font-weight: 600;
+      padding: 11px 24px; border-radius: 10px; border: 1px solid var(--border);
+      text-decoration: none; cursor: pointer; transition: all 0.2s; width: 100%;
     }
-    .btn-tg-checkout {
-      background: #229ED9;
-      color: #fff;
-    }
-    .btn-tg-checkout:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
+    .confirm-tg-btn:hover { border-color: #229ED9; color: #fff; text-decoration: none; }
+
+    /* Drawer checkout wrapper */
+    .drawer-checkout { border-top: 1px solid var(--border); padding: 0 24px 28px; background: var(--surface2); }
 
     /* TOAST */
     .toast-msg {
@@ -530,7 +616,7 @@
   </div>
 
   <div class="cta-row">
-    <a class="btn btn-primary" href="https://www.instagram.com/digital_pass.co" target="_blank" rel="noopener noreferrer">📸 Order on Instagram</a>
+    <a class="btn btn-primary" href="https://ig.me/m/digital_pass.co" target="_blank" rel="noopener noreferrer">📸 Order on Instagram</a>
     <a class="btn btn-outline" href="https://t.me/digitalpassco" target="_blank" rel="noopener noreferrer">💬 Telegram Support</a>
   </div>
 </header>
@@ -993,7 +1079,7 @@
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <p><strong>Send payment screenshot + copied order summary</strong> to our <a href="https://www.instagram.com/digital_pass.co" target="_blank" rel="noopener noreferrer">Instagram (@digital_pass.co)</a> or <a href="https://t.me/digitalpassco" target="_blank" rel="noopener noreferrer">Telegram</a> for instant activation.</p>
+        <p><strong>Send payment screenshot + copied order summary</strong> to our <a href="https://ig.me/m/digital_pass.co" target="_blank" rel="noopener noreferrer">Instagram (@digital_pass.co)</a> or <a href="https://t.me/digitalpassco" target="_blank" rel="noopener noreferrer">Telegram</a> for instant activation.</p>
       </div>
     </div>
 
@@ -1037,7 +1123,7 @@
     <h2>📩 Ready to Order?</h2>
     <p class="sub">DM us with the tool name. We'll get you activated within 15 minutes.</p>
     <div class="contact-cards">
-      <a class="contact-card" href="https://www.instagram.com/digital_pass.co" target="_blank" rel="noopener noreferrer">
+      <a class="contact-card" href="https://ig.me/m/digital_pass.co" target="_blank" rel="noopener noreferrer">
         <span class="ci">📸</span>
         <div><div class="cl">Instagram DM · Direct Orders</div><div class="ch">@digital_pass.co</div></div>
       </a>
@@ -1059,48 +1145,183 @@
 </div>
 
 <!-- TOAST MESSAGE -->
-<div class="toast-msg" id="toastMsg">✓ Added to Cart</div>
+<div class="toast-msg" id="toastMsg">&#10003; Added to Cart</div>
 
-<!-- CART DRAWER / MODAL -->
+<!-- CART DRAWER -->
 <div class="cart-overlay" id="cartOverlay" onclick="handleOverlayClick(event)">
   <div class="cart-drawer">
-    <div class="drawer-header">
-      <h3>🛒 Your Selected Workspaces</h3>
-      <button class="drawer-close" onclick="toggleCartDrawer(false)">✕</button>
+
+    <div class="drawer-header" style="flex-direction:column;align-items:stretch;gap:0;padding-bottom:0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;">
+        <h3 style="font-size:17px;font-weight:700;color:var(--white);">&#128722; Checkout</h3>
+        <button class="drawer-close" onclick="toggleCartDrawer(false)">&#10005;</button>
+      </div>
+      <div class="step-indicator">
+        <div class="step-dot active" id="sd1">1</div>
+        <div class="step-line" id="sl1"></div>
+        <div class="step-dot" id="sd2">2</div>
+        <div class="step-line" id="sl2"></div>
+        <div class="step-dot" id="sd3">3</div>
+        <div class="step-line" id="sl3"></div>
+        <div class="step-dot" id="sd4">4</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:5px 2px 14px;">
+        <span style="font-size:10px;color:var(--muted);text-align:center;width:25%;">Order</span>
+        <span style="font-size:10px;color:var(--muted);text-align:center;width:25%;">Details</span>
+        <span style="font-size:10px;color:var(--muted);text-align:center;width:25%;">Pay</span>
+        <span style="font-size:10px;color:var(--muted);text-align:center;width:25%;">Done</span>
+      </div>
     </div>
 
     <div class="drawer-body" id="drawerBody">
+
       <div class="empty-cart-msg" id="emptyCartMsg">
-        <div class="ec-icon">🛒</div>
-        <p><strong>Your cart is currently empty</strong></p>
-        <p style="font-size:12px;margin-top:6px;">Browse the catalog and click "+ Add to Cart" to select tools.</p>
+        <div class="ec-icon">&#128722;</div>
+        <p><strong>Your cart is empty</strong></p>
+        <p style="font-size:12px;margin-top:6px;">Add tools from the catalog above.</p>
       </div>
 
-      <div class="cart-items-list" id="cartItemsList">
-        <!-- Cart items injected by JS -->
+      <!-- STEP 1: Order Review -->
+      <div class="checkout-step active" id="coStep1">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;">Your Order</div>
+        <div class="invoice-box">
+          <div class="invoice-header">
+            <span class="inv-title">DigitalPass &middot; Invoice</span>
+            <span class="inv-id" id="invOrderId">#DP-000000</span>
+          </div>
+          <div id="invoiceRows"></div>
+          <div class="invoice-total-row">
+            <span class="itl">TOTAL DUE (USDT)</span>
+            <span class="itv" id="invoiceTotalVal">$0.00</span>
+          </div>
+        </div>
+        <div id="cartItemsList" class="cart-items-list" style="margin-bottom:14px;"></div>
+        <div class="step-nav">
+          <button class="btn-step-next" onclick="goToStep(2)">Continue to Details &#8594;</button>
+        </div>
       </div>
-    </div>
 
-    <div class="drawer-checkout" id="drawerCheckout" style="display: none;">
-      <div class="cart-total-row">
-        <span class="cart-total-label">Total to Pay (USDT):</span>
-        <span class="cart-total-val" id="drawerTotalVal">$0.00</span>
+      <!-- STEP 2: Customer Details -->
+      <div class="checkout-step" id="coStep2">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:14px;">Your Contact Details</div>
+
+        <label class="co-label" for="coName">Full Name</label>
+        <input class="co-input" id="coName" type="text" placeholder="e.g. Juan dela Cruz" autocomplete="name" />
+
+        <label class="co-label" for="coEmail">Email Address <span style="color:var(--red);">*</span></label>
+        <input class="co-input" id="coEmail" type="email" placeholder="you@company.com" autocomplete="email" />
+        <div style="font-size:11px;color:var(--muted);margin-top:-10px;margin-bottom:14px;">&#9889; We deliver workspace access to this email. Double-check it carefully.</div>
+
+        <label class="co-label" for="coHandle">Telegram / Instagram handle <span style="font-weight:400;">(optional)</span></label>
+        <input class="co-input" id="coHandle" type="text" placeholder="@yourusername" />
+
+        <div class="step-nav">
+          <button class="btn-step-back" onclick="goToStep(1)">&#8592; Back</button>
+          <button class="btn-step-next" onclick="validateAndGoStep3()">Go to Payment &#8594;</button>
+        </div>
       </div>
 
-      <p style="font-size: 11px; color: var(--muted); margin-bottom: 8px;">Order Summary (Copy to DM):</p>
-      <div class="order-summary-box" id="orderSummaryText"></div>
+      <!-- STEP 3: Payment -->
+      <div class="checkout-step" id="coStep3">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;">Select Payment Method</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Send exactly <strong id="payAmountLabel" style="color:var(--green);font-size:16px;font-weight:800;"></strong> USDT</div>
 
-      <div class="checkout-btns">
-        <button class="btn-checkout-action btn-copy-summary" onclick="copyOrderSummary()">
-          📋 Copy Order Summary
-        </button>
-        <a class="btn-checkout-action btn-ig-checkout" href="https://www.instagram.com/digital_pass.co" target="_blank" rel="noopener noreferrer">
-          📸 Send Screenshot on Instagram
-        </a>
-        <button class="btn-checkout-action btn-tg-checkout" onclick="openTelegramOrder()">
-          💬 Send via Telegram (Pre-Filled)
-        </button>
+        <div class="pay-method-card sel-yellow" id="pmBinance" onclick="selectPayMethod('binance')">
+          <div class="pay-method-top">
+            <span class="pay-method-name">&#127937; Binance Pay</span>
+            <span class="pay-method-badge">RECOMMENDED &middot; 0 Fees</span>
+          </div>
+          <div class="pay-method-sub">Binance App &#8594; Pay &#8594; Send &#8594; Enter ID below &#8594; Enter exact amount</div>
+          <div class="pay-detail-box show" id="pdBinance">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Binance Pay ID:</div>
+            <div class="cart-copy-row">
+              <code class="cart-mono">1197124891</code>
+              <button class="cart-copy-btn" onclick="copyValue('1197124891',this);event.stopPropagation()">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pay-method-card" id="pmTrc20" onclick="selectPayMethod('trc20')">
+          <div class="pay-method-top">
+            <span class="pay-method-name">&#128142; USDT &middot; TRC-20 Network (Tron)</span>
+          </div>
+          <div class="pay-method-sub">Most common &middot; Low network fee &middot; Instant</div>
+          <div class="pay-detail-box" id="pdTrc20">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Wallet address (TRC-20 only &mdash; do not send other networks):</div>
+            <div class="cart-copy-row">
+              <code class="cart-mono">TJGCPzM1cPtfEReSFN4Q9Kfc1TKfM3fxsY</code>
+              <button class="cart-copy-btn" onclick="copyValue('TJGCPzM1cPtfEReSFN4Q9Kfc1TKfM3fxsY',this);event.stopPropagation()">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pay-method-card" id="pmBep20" onclick="selectPayMethod('bep20')">
+          <div class="pay-method-top">
+            <span class="pay-method-name">&#128142; USDT &middot; BEP-20 Network (BNB Chain)</span>
+          </div>
+          <div class="pay-method-sub">BNB Smart Chain &middot; Very low fee</div>
+          <div class="pay-detail-box" id="pdBep20">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Wallet address (BEP-20 only &mdash; do not send other networks):</div>
+            <div class="cart-copy-row">
+              <code class="cart-mono">0x5AF792A8C0bfa756e795BC10419C0E8d64f837E6</code>
+              <button class="cart-copy-btn" onclick="copyValue('0x5AF792A8C0bfa756e795BC10419C0E8d64f837E6',this);event.stopPropagation()">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:rgba(124,106,255,0.07);border:1px solid rgba(124,106,255,0.2);border-radius:10px;padding:11px 14px;margin:4px 0 14px;font-size:12px;color:var(--muted);line-height:1.7;">
+          &#9888;&#65039; Send the <strong style="color:var(--text);">exact amount shown</strong>. Wrong network = funds lost. After sending, tap the button below.
+        </div>
+
+        <label class="co-label" for="coTxid">Transaction Hash / Order ID <span style="font-weight:400;">(optional)</span></label>
+        <input class="co-input" id="coTxid" type="text" placeholder="e.g. TXID, Hash, or Binance Pay ID" />
+
+        <div class="step-nav">
+          <button class="btn-step-back" onclick="goToStep(2)">&#8592; Back</button>
+          <button class="btn-step-next" onclick="goToStep(4)">I Have Paid &#8594;</button>
+        </div>
       </div>
+
+      <!-- STEP 4: Confirmation -->
+      <div class="checkout-step" id="coStep4">
+        <div class="confirm-screen">
+          <div class="confirm-icon">&#127881;</div>
+          <div class="confirm-title">Payment Submitted!</div>
+          <div class="confirm-sub">
+            Send us your proof on Instagram DM.<br>
+            We activate your workspace within <strong style="color:var(--white);">5&ndash;15 minutes</strong>.
+          </div>
+          <div class="confirm-order-id" id="confirmOrderId">#DP-000000</div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;text-align:left;margin-bottom:16px;">
+            <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;">Send these 3 things in your DM:</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;">
+              <span style="background:var(--accent);color:#fff;border-radius:50%;min-width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">1</span>
+              <span style="font-size:13px;color:var(--text);">&#128248; Screenshot of your payment confirmation</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;">
+              <span style="background:var(--accent);color:#fff;border-radius:50%;min-width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">2</span>
+              <span style="font-size:13px;color:var(--text);">&#128203; Your order summary (tap Copy button below)</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-start;">
+              <span style="background:var(--accent);color:#fff;border-radius:50%;min-width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">3</span>
+              <span style="font-size:13px;color:var(--text);">&#128231; Your email: <strong id="confirmEmail" style="color:var(--accent2);word-break:break-all;"></strong></span>
+            </div>
+          </div>
+
+          <button class="confirm-tg-btn" style="margin-bottom:10px;color:var(--white);border-color:var(--border);background:var(--surface3);" onclick="copyFinalSummary(this)">
+            &#128203; Copy My Order Summary
+          </button>
+
+          <a class="confirm-ig-btn" href="https://ig.me/m/digital_pass.co" target="_blank" rel="noopener noreferrer">
+            &#128248; Open Instagram DM &mdash; @digital_pass.co
+          </a>
+          <button class="confirm-tg-btn" onclick="openFinalTelegram()">
+            &#128172; Or send via Telegram instead
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1111,154 +1332,202 @@
 
 <script>
   let cart = [];
+  let selectedPayMethod = 'binance';
+  let orderIdStr = '';
 
-  // Load cart from LocalStorage
-  try {
-    const saved = localStorage.getItem('digitalpass_cart');
-    if (saved) cart = JSON.parse(saved);
-  } catch(e) {}
-
-  function saveCart() {
-    try {
-      localStorage.setItem('digitalpass_cart', JSON.stringify(cart));
-    } catch(e) {}
+  function genOrderId() {
+    return '#DP-' + Math.random().toString(36).substr(2, 6).toUpperCase();
   }
 
-  function showToast(text) {
-    const toast = document.getElementById('toastMsg');
-    toast.textContent = text;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2000);
+  try { const s = localStorage.getItem('digitalpass_cart'); if (s) cart = JSON.parse(s); } catch(e){}
+
+  function saveCart() {
+    try { localStorage.setItem('digitalpass_cart', JSON.stringify(cart)); } catch(e){}
+  }
+
+  function showToast(txt) {
+    const t = document.getElementById('toastMsg');
+    t.textContent = txt; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
   }
 
   function addToCart(id, name, duration, price) {
-    // Check if item already exists
-    const existing = cart.find(item => item.id === id);
-    if (existing) {
-      existing.qty = (existing.qty || 1) + 1;
-    } else {
-      cart.push({ id, name, duration, price: Number(price), qty: 1 });
-    }
-    saveCart();
-    renderCart();
-    showToast(`✓ Added ${name} to cart`);
-
-    // Animate button feedback
+    const ex = cart.find(i => i.id === id);
+    if (ex) ex.qty = (ex.qty || 1) + 1;
+    else cart.push({ id, name, duration, price: +price, qty: 1 });
+    saveCart(); renderCart();
+    showToast('\u2713 ' + name + ' added');
     if (event && event.target) {
-      const btn = event.target;
-      const originalText = btn.textContent;
-      btn.textContent = '✓ Added';
-      btn.classList.add('added');
-      setTimeout(() => {
-        btn.textContent = originalText;
-        btn.classList.remove('added');
-      }, 1500);
+      const b = event.target, orig = b.textContent;
+      b.textContent = '\u2713 Added'; b.classList.add('added');
+      setTimeout(() => { b.textContent = orig; b.classList.remove('added'); }, 1500);
     }
   }
 
-  function removeFromCart(index) {
-    cart.splice(index, 1);
-    saveCart();
-    renderCart();
-  }
+  function removeFromCart(i) { cart.splice(i, 1); saveCart(); renderCart(); }
 
   function toggleCartDrawer(open) {
-    const overlay = document.getElementById('cartOverlay');
-    if (open) {
-      overlay.classList.add('open');
-      renderCart();
-    } else {
-      overlay.classList.remove('open');
-    }
+    const ov = document.getElementById('cartOverlay');
+    if (open) { ov.classList.add('open'); goToStep(1); renderCart(); }
+    else ov.classList.remove('open');
   }
 
   function handleOverlayClick(e) {
-    if (e.target.id === 'cartOverlay') {
-      toggleCartDrawer(false);
-    }
+    if (e.target.id === 'cartOverlay') toggleCartDrawer(false);
   }
 
-  function generateSummaryText() {
-    if (cart.length === 0) return '';
-    let total = 0;
-    let lines = ['🔐 DigitalPass Order Summary:'];
-    cart.forEach(item => {
-      const itemTotal = item.price * (item.qty || 1);
-      total += itemTotal;
-      lines.push(`• ${item.name} (${item.duration}) ${item.qty > 1 ? 'x' + item.qty : ''} — $${itemTotal.toFixed(2)}`);
+  function getTotal() { return cart.reduce((s, i) => s + i.price * (i.qty||1), 0); }
+
+  function goToStep(n) {
+    if (cart.length === 0) return;
+    for (let i = 1; i <= 4; i++) {
+      const el  = document.getElementById('coStep' + i);
+      const dot = document.getElementById('sd' + i);
+      const ln  = document.getElementById('sl' + i);
+      if (el)  el.classList.toggle('active', i === n);
+      if (dot) { dot.classList.remove('active','done'); dot.classList.add(i < n ? 'done' : i === n ? 'active' : ''); }
+      if (ln && i < 4) ln.classList.toggle('done', i < n);
+    }
+    if (n === 3) {
+      const lbl = document.getElementById('payAmountLabel');
+      if (lbl) lbl.textContent = '$' + getTotal().toFixed(2);
+    }
+    if (n === 4) buildConfirmScreen();
+  }
+
+  function validateAndGoStep3() {
+    const em = (document.getElementById('coEmail').value || '').trim();
+    if (!em || !em.includes('@') || !em.includes('.')) {
+      alert('Please enter a valid email address. We deliver your workspace access to this email.');
+      document.getElementById('coEmail').focus(); return;
+    }
+    goToStep(3);
+  }
+
+  function selectPayMethod(m) {
+    selectedPayMethod = m;
+    ['Binance','Trc20','Bep20'].forEach(k => {
+      const c = document.getElementById('pm' + k);
+      const d = document.getElementById('pd' + k);
+      if (c) c.classList.remove('sel-yellow','sel-purple');
+      if (d) d.classList.remove('show');
     });
-    lines.push('──────────────────────');
-    lines.push(`Total: $${total.toFixed(2)} USDT`);
-    lines.push(`Pay to: Binance ID 1197124891 / USDT TRC20`);
+    const key = m === 'binance' ? 'Binance' : m === 'trc20' ? 'Trc20' : 'Bep20';
+    const sc = document.getElementById('pm' + key);
+    const sd = document.getElementById('pd' + key);
+    if (sc) sc.classList.add(m === 'binance' ? 'sel-yellow' : 'sel-purple');
+    if (sd) sd.classList.add('show');
+  }
+
+  function buildConfirmScreen() {
+    if (!orderIdStr) orderIdStr = genOrderId();
+    const email = (document.getElementById('coEmail').value || '').trim();
+    const cidEl = document.getElementById('confirmOrderId');
+    const cemEl = document.getElementById('confirmEmail');
+    if (cidEl) cidEl.textContent = orderIdStr;
+    if (cemEl) cemEl.textContent = email;
+  }
+
+  function buildSummaryText() {
+    if (!orderIdStr) orderIdStr = genOrderId();
+    const name  = (document.getElementById('coName').value  || '').trim() || 'Customer';
+    const email = (document.getElementById('coEmail').value || '').trim();
+    const payLbl = selectedPayMethod === 'binance' ? 'Binance Pay (ID: 1197124891)' :
+                   selectedPayMethod === 'trc20'   ? 'USDT TRC-20 wallet' : 'USDT BEP-20 wallet';
+    const total = getTotal();
+    const lines = ['DigitalPass \u2014 Order ' + orderIdStr,
+                   '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500'];
+    cart.forEach(item => {
+      const t = item.price * (item.qty||1);
+      lines.push('\u2022 ' + item.name + ' \u2014 ' + item.duration + (item.qty>1 ? ' \xD7'+item.qty : '') + ' \u2014 $' + t.toFixed(2));
+    });
+    lines.push('\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500');
+    lines.push('Total Paid : $' + total.toFixed(2) + ' USDT');
+    lines.push('Paid via   : ' + payLbl);
+    lines.push('Email      : ' + email);
+    lines.push('Name       : ' + name);
+    const txid = (document.getElementById('coTxid') ? document.getElementById('coTxid').value : '').trim();
+    if (txid) lines.push('TxID / Ref : ' + txid);
+    lines.push('');
+    lines.push('[Payment screenshot attached]');
     return lines.join('\n');
   }
 
+  function copyFinalSummary(btn) {
+    navigator.clipboard.writeText(buildSummaryText()).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '\u2713 Copied! Now paste in DM';
+      btn.style.color = 'var(--green)';
+      setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2500);
+      showToast('\u2713 Order summary copied!');
+    });
+  }
+
+  function openFinalTelegram() {
+    window.open('https://t.me/digitalpassco?text=' + encodeURIComponent(buildSummaryText()), '_blank');
+  }
+
   function renderCart() {
-    const list = document.getElementById('cartItemsList');
-    const emptyMsg = document.getElementById('emptyCartMsg');
-    const checkoutArea = document.getElementById('drawerCheckout');
-    const floatingBtn = document.getElementById('floatingCartBtn');
-    const countBadge = document.getElementById('cartCountBadge');
-    const totalBadge = document.getElementById('cartTotalBadge');
-    const drawerTotal = document.getElementById('drawerTotalVal');
-    const summaryBox = document.getElementById('orderSummaryText');
+    const list      = document.getElementById('cartItemsList');
+    const emptyMsg  = document.getElementById('emptyCartMsg');
+    const floatBtn  = document.getElementById('floatingCartBtn');
+    const cntBadge  = document.getElementById('cartCountBadge');
+    const totBadge  = document.getElementById('cartTotalBadge');
+    const invRows   = document.getElementById('invoiceRows');
+    const invTotal  = document.getElementById('invoiceTotalVal');
+    const invId     = document.getElementById('invOrderId');
 
-    let totalCount = 0;
-    let totalPrice = 0;
+    let cnt = 0, total = 0;
+    cart.forEach(i => { cnt += (i.qty||1); total += i.price*(i.qty||1); });
 
-    cart.forEach(i => {
-      totalCount += (i.qty || 1);
-      totalPrice += i.price * (i.qty || 1);
-    });
+    floatBtn.style.display = cnt > 0 ? 'flex' : 'none';
+    if (cnt > 0) { cntBadge.textContent = cnt; totBadge.textContent = '$' + total.toFixed(2); }
 
-    // Update Floating Pill
-    if (totalCount > 0) {
-      floatingBtn.style.display = 'flex';
-      countBadge.textContent = totalCount;
-      totalBadge.textContent = `$${totalPrice.toFixed(2)}`;
-    } else {
-      floatingBtn.style.display = 'none';
-    }
-
-    // Update Drawer Contents
     if (cart.length === 0) {
-      emptyMsg.style.display = 'block';
-      list.innerHTML = '';
-      checkoutArea.style.display = 'none';
-    } else {
-      emptyMsg.style.display = 'none';
-      checkoutArea.style.display = 'block';
-      drawerTotal.textContent = `$${totalPrice.toFixed(2)}`;
-      summaryBox.textContent = generateSummaryText();
-
-      list.innerHTML = cart.map((item, idx) => `
-        <div class="cart-item-card">
-          <div class="cart-item-info">
-            <div class="c-name">${item.name}</div>
-            <div class="c-sub">${item.duration} ${item.qty > 1 ? '· Qty: ' + item.qty : ''}</div>
-          </div>
-          <div class="cart-item-side">
-            <div class="cart-item-price">$${(item.price * (item.qty || 1)).toFixed(2)}</div>
-            <button class="btn-remove-item" onclick="removeFromCart(${idx})" title="Remove item">✕</button>
-          </div>
-        </div>
-      `).join('');
+      if (emptyMsg) emptyMsg.style.display = 'block';
+      if (list) list.innerHTML = '';
+      if (invRows) invRows.innerHTML = '';
+      document.querySelectorAll('.checkout-step').forEach(s => s.classList.remove('active'));
+      return;
     }
+
+    if (emptyMsg) emptyMsg.style.display = 'none';
+    if (!orderIdStr) orderIdStr = genOrderId();
+    if (invId)    invId.textContent    = orderIdStr;
+    if (invTotal) invTotal.textContent = '$' + total.toFixed(2);
+
+    if (invRows) {
+      invRows.innerHTML = cart.map(item => {
+        const t = item.price * (item.qty||1);
+        return '<div class="invoice-row"><div><div class="ir-name">' + item.name + '</div>' +
+          '<div class="ir-meta">' + item.duration + (item.qty>1?' \xD7'+item.qty:'') + '</div></div>' +
+          '<div class="ir-price">$' + t.toFixed(2) + '</div></div>';
+      }).join('');
+    }
+
+    if (list) {
+      list.innerHTML = cart.map((item, idx) =>
+        '<div class="cart-item-card">' +
+        '<div class="cart-item-info"><div class="c-name">' + item.name + '</div>' +
+        '<div class="c-sub">' + item.duration + (item.qty>1?' \xB7 Qty: '+item.qty:'') + '</div></div>' +
+        '<div class="cart-item-side"><div class="cart-item-price">$' + (item.price*(item.qty||1)).toFixed(2) + '</div>' +
+        '<button class="btn-remove-item" onclick="removeFromCart('+idx+')" title="Remove">\u2715</button>' +
+        '</div></div>'
+      ).join('');
+    }
+
+    if (!document.querySelector('.checkout-step.active')) goToStep(1);
   }
 
-  function copyOrderSummary() {
-    const text = generateSummaryText();
+  function copyValue(text, btn) {
     navigator.clipboard.writeText(text).then(() => {
-      showToast('✓ Order Summary Copied! Paste it in your DM');
+      const orig = btn.textContent;
+      btn.textContent = '\u2713 Copied'; btn.style.color = 'var(--green)';
+      setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 1800);
+      showToast('\u2713 Copied!');
     });
   }
 
-  function openTelegramOrder() {
-    const text = encodeURIComponent(generateSummaryText() + '\n\nI have attached my payment screenshot.');
-    window.open(`https://t.me/digitalpassco?text=${text}`, '_blank');
-  }
-
-  // Initial render on load
   renderCart();
 </script>
 
